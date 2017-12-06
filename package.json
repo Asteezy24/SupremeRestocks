@@ -1,6 +1,6 @@
 {
   "name": "SupremeRestocks",
-  "version": "2.0",
+  "version": "2.0.0",
   "description": "Script that monitors supremenewyork for items that have restocked.",
   "main": "supreme.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "request": "^2.79.0",
     "request-promise": "^4.2.2",
     "slack-webhook": "^1.0.0",
+    "twitter": "^1.7.1",
     "underscore": "^1.8.3",
     "webhook-discord": "^2.0.6"
   }
