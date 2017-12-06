@@ -12,7 +12,7 @@ var newSoldOutItems = []
 const proxyList = [];
 const userAgentList = [];
 var restockCycles = 0;//do not change
-var refreshDelay = 30000//check every 30 seconds
+var refreshDelay = 90000//check every 90 seconds
 
 //uncomment for slack configuration
 // const slackWebhookURL = ''
@@ -70,7 +70,7 @@ function scrape(arr) {
   request({
       url: 'https://www.supremenewyork.com/shop/all',
       headers: generateRandomUserAgent(),
-      timeout:60000,
+      timeout:80000,
       proxy: formatProxy(proxyList[Math.floor(Math.random() * proxyList.length)])
   }, function(error, response, html) {
 
