@@ -1,4 +1,4 @@
-var Twitter = require('twitter');
+const Twit = require('twit');
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const _ = require('underscore');
@@ -29,21 +29,17 @@ var refreshDelay = 90000//check every 90 seconds
 //discord.hookToken = '';
 
 //uncomment if you need twitter
-// var client = new Twitter({
-//   consumer_key: '',
-//   consumer_secret: '',
-//   access_token_key: '',
-//   access_token_secret: ''
-// });
+//var T = new Twit({
+//  consumer_key:         '',
+//  consumer_secret:      '',
+//  access_token:         '',
+//  access_token_secret:  '',
+//  timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+//})
 
 //Uncomment if you need slack or discord or twitter output
 //slack.send('Now monitoring for restocks.')
 //discord.sendMessage('Now monitoring for restocks.');
-// client.post('statuses/update', {status: 'Now monitoring for restocks.'}, function(error, tweet, response) {
-//   if (!error) {
-//     console.log(tweet);
-//   }
-// });
 
 console.log('Now monitoring for restocks.');
 
@@ -138,20 +134,52 @@ function generateRandomUserAgent(){
 
 function postToSlack(restockedItems){
   for (let i = 0; i < restockedItems.length; i++) {
-    slack.send('http://www.supremenewyork.com' + restockedItems[i])
+      request.get({url:'http://www.supremenewyork.com' + restockedItems[i]}, function(error, response, body) {
+          if (body) {
+              let $ = cheerio.load(body);
+              var itemName = $('h1[itemprop="name"]').text();
+              slack.send({
+                text: 'http://www.supremenewyork.com' + restockedItems[i],
+                username: itemName,
+                icon_emoji: ':scream_cat:',
+                channel: '#supreme-restocks'
+              })
+          } else {
+            console.log('Could not find Item Name.');
+          }
+      })
   }
 }
 
 function postToDiscord(restockedItems){
+
   for (let i = 0; i < restockedItems.length; i++) {
-    discord.sendMessage('http://www.supremenewyork.com' + restockedItems[i]);
+      request.get({url:'http://www.supremenewyork.com' + restockedItems[i]}, function(error, response, body) {
+          if (body) {
+              let $ = cheerio.load(body);
+              var itemName = $('h1[itemprop="name"]').text();
+              discord.userName = itemName
+              discord.sendMessage('http://www.supremenewyork.com' + restockedItems[i]);
+          } else {
+            console.log('Could not find Item Name.');
+          }
+      })
   }
 }
 
 function postToTwitter(restockedItems){
-   for (let i = 0; i < restockedItems.length; i++) {
-      client.post('statuses/update', {status: 'http://www.supremenewyork.com' + restockedItems[i]}, function(error, tweet, response) {
-    });
+  for (let i = 0; i < restockedItems.length; i++) {
+      request.get({url:'http://www.supremenewyork.com' + restockedItems[i]}, function(error, response, body) {
+          if (body) {
+              let $ = cheerio.load(body);
+              var itemName = $('h1[itemprop="name"]').text();
+              T.post('statuses/update', { status: itemName + ' http://www.supremenewyork.com' + restockedItems[i] }, function(err, data, response) {
+                 console.log('Tweet Posted!')
+               })
+          } else {
+            console.log('Could not find Item Name.');
+          }
+      })
   }
 }
 
