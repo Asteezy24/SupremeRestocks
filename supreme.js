@@ -15,7 +15,7 @@ var restockCycles = 0; //do not change
 var refreshDelay = 40000 //check every 40 seconds
 
 //uncomment for slack configuration
-const slackWebhookURL = 'https://hooks.slack.com/services/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'
+const slackWebhookURL = ''
 const slack = new SlackWebhook(slackWebhookURL, {
     defaults: {
         username: 'Bot',
